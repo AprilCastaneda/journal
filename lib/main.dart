@@ -28,8 +28,6 @@ void main() async {
   await DatabaseManager.initialize();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  Brightness brightness =
-      (prefs.getBool(DARK_THEME) ?? false) ? Brightness.dark : Brightness.light;
 
-  runApp(App(schemaSQL: schemaSQL, brightness: brightness));
+  runApp(App(schemaSQL: schemaSQL, prefs: prefs));
 }

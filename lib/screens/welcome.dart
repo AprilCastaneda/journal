@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/journal_drawer.dart';
 
 class Welcome extends StatefulWidget {
-  Welcome({Key key}) : super(key: key);
+  final void Function() setTheme;
+  final SharedPreferences prefs;
+  Welcome({Key key, this.setTheme, this.prefs}) : super(key: key);
 
   @override
   _WelcomeState createState() => _WelcomeState();
 }
 
 class _WelcomeState extends State<Welcome> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+      key: scaffoldKey,
       endDrawerEnableOpenDragGesture: false,
-      endDrawer: JournalDrawer(),
+      endDrawer: JournalDrawer(setTheme: widget.setTheme, prefs: widget.prefs),
       appBar: AppBar(
         title: Text('Welcome'),
         actions: [
@@ -24,7 +28,7 @@ class _WelcomeState extends State<Welcome> {
               icon: Icon(
                 Icons.settings,
               ),
-              onPressed: () => _scaffoldKey.currentState.openEndDrawer(),
+              onPressed: () => scaffoldKey.currentState.openEndDrawer(),
             ),
           ),
         ],
