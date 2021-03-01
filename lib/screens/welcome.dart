@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/journal_drawer.dart';
 
 class Welcome extends StatefulWidget {
   Welcome({Key key}) : super(key: key);
@@ -8,17 +9,23 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawerEnableOpenDragGesture: false,
+      endDrawer: JournalDrawer(),
       appBar: AppBar(
         title: Text('Welcome'),
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.settings,
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(
+                Icons.settings,
+              ),
+              onPressed: () => _scaffoldKey.currentState.openEndDrawer(),
             ),
-            onPressed: () {},
           ),
         ],
       ),
@@ -34,7 +41,6 @@ class _WelcomeState extends State<Welcome> {
                     Icons.book,
                     color: Colors.pink,
                     size: MediaQuery.of(context).size.height * .1,
-                    semanticLabel: 'Journal',
                   ),
                 ],
               ),
