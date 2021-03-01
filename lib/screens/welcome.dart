@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../screens/new_entry.dart';
 import '../widgets/journal_drawer.dart';
 
 class Welcome extends StatefulWidget {
   final void Function() setTheme;
   final SharedPreferences prefs;
+  static const routeName = '/';
   Welcome({Key key, this.setTheme, this.prefs}) : super(key: key);
 
   @override
@@ -58,9 +60,29 @@ class _WelcomeState extends State<Welcome> {
                         style: Theme.of(context).textTheme.headline6)
                   ]),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  RaisedButton(
+                    child: Icon(
+                      Icons.add_circle_outlined,
+                      size: MediaQuery.of(context).size.height * .075,
+                    ),
+                    onPressed: () => pushNewEntry(context),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void pushNewEntry(BuildContext context) {
+    Navigator.of(context).pushNamed(NewEntry.routeName);
   }
 }

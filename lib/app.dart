@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/welcome.dart';
+import 'screens/new_entry.dart';
 
 class App extends StatefulWidget {
   final String schemaSQL;
@@ -43,9 +45,17 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Welcome',
-        theme: ThemeData(brightness: brightness),
-        home: Welcome(setTheme: setTheme, prefs: widget.prefs));
+      title: 'Welcome',
+      theme: ThemeData(brightness: brightness),
+      initialRoute: '/',
+      routes: {
+        Welcome.routeName: (context) =>
+            Welcome(setTheme: setTheme, prefs: widget.prefs),
+        NewEntry.routeName: (context) =>
+            NewEntry(setTheme: setTheme, prefs: widget.prefs),
+      },
+    );
+    // home: Welcome(setTheme: setTheme, prefs: widget.prefs));
     // title: 'Journal', theme: ThemeData.dark(), routes: routes);
   }
 }
