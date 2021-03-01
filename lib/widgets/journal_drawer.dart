@@ -7,7 +7,7 @@ class JournalDrawer extends StatefulWidget {
 }
 
 class _JournalDrawerState extends State<JournalDrawer> {
-  bool isDark = false;
+  bool _isDark = false;
 
   @override
   Widget build(BuildContext context) {
@@ -16,33 +16,22 @@ class _JournalDrawerState extends State<JournalDrawer> {
         padding: EdgeInsets.zero,
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height * .1,
+            height: MediaQuery.of(context).size.height * .125,
             child: DrawerHeader(
               child: Text('Settings'),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                children: [
-                  Text('Dark Mode'),
-                ],
-              ),
-              Column(
-                children: [
-                  FlutterSwitch(
-                      value: isDark,
-                      showOnOff: true,
-                      onToggle: (val) {
-                        setState(() {
-                          isDark = val;
-                        });
-                      }),
-                ],
-              ),
-            ],
-          ),
+          Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * .01),
+              child: SwitchListTile(
+                  title: const Text('Dark Mode'),
+                  value: _isDark,
+                  onChanged: (val) {
+                    setState(() {
+                      _isDark = val;
+                    });
+                  })),
         ],
       ),
     );
