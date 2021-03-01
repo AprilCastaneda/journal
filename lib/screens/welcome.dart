@@ -13,6 +13,14 @@ class _WelcomeState extends State<Welcome> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Center(
         child: Column(
