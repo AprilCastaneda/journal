@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/welcome.dart';
 import 'screens/new_entry.dart';
+import 'screens/journal_entry_list.dart';
 
 class App extends StatefulWidget {
   final String schemaSQL;
@@ -49,10 +50,10 @@ class _AppState extends State<App> {
       theme: ThemeData(brightness: brightness),
       initialRoute: '/',
       routes: {
-        Welcome.routeName: (context) =>
-            Welcome(setTheme: setTheme, prefs: widget.prefs),
-        NewEntry.routeName: (context) =>
-            NewEntry(setTheme: setTheme, prefs: widget.prefs),
+        JournalEntryList.routeName: (context) =>
+            JournalEntryList(setTheme: setTheme, prefs: widget.prefs),
+        Welcome.routeName: (context) => Welcome(),
+        NewEntry.routeName: (context) => NewEntry(),
       },
     );
     // home: Welcome(setTheme: setTheme, prefs: widget.prefs));

@@ -37,16 +37,7 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
             SizedBox(
               height: 10,
             ),
-            RaisedButton(
-              onPressed: () {
-                if (formKey.currentState.validate()) {
-                  formKey.currentState.save();
-                  // Database.of(context).saveJournalEntry(journalEntryFields);
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Text('Save Entry'),
-            ),
+            saveButton(context),
           ],
         ),
       ),
@@ -55,7 +46,21 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
 
   Widget formContent(BuildContext context) {}
 
-  Widget titleTextField() {}
+  Widget titleTextField() {
+    return TextFormField(
+      autofocus: true,
+      decoration: InputDecoration(
+        labelText: 'Title',
+        border: OutlineInputBorder(),
+      ),
+      onSaved: (value) {
+        journalEntryValues.title = value;
+      },
+      validator: (value) {
+        return value.isEmpty ? 'Please enter a title' : null;
+      },
+    );
+  }
 
   Widget bodyTextField() {}
 

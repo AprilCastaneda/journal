@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../db/database_manager.dart';
 // import 'journal_entry.dart';
 import 'new_entry.dart';
@@ -7,13 +8,19 @@ import 'welcome.dart';
 import '../widgets/journal_scaffold.dart';
 import '../models/journal.dart';
 import '../models/journal_entry.dart';
+import '../components/arguments.dart';
 
-class JournalEntryListScreen extends StatefulWidget {
+class JournalEntryList extends StatefulWidget {
+  final void Function() setTheme;
+  final SharedPreferences prefs;
+  static const routeName = '/';
+  JournalEntryList({Key key, this.setTheme, this.prefs}) : super(key: key);
+
   @override
-  _JournalEntryListScreenState createState() => _JournalEntryListScreenState();
+  _JournalEntryListState createState() => _JournalEntryListState();
 }
 
-class _JournalEntryListScreenState extends State<JournalEntryListScreen> {
+class _JournalEntryListState extends State<JournalEntryList> {
   Journal journal;
 
   @override
@@ -30,24 +37,21 @@ class _JournalEntryListScreenState extends State<JournalEntryListScreen> {
     });
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return JournalScaffold(
-  //       title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
-  //       child: journal.isEmpty ? Welcome() : journalList(context),
-  //       fab: addEntryFab(context));
-  // }
   @override
   Widget build(BuildContext context) {
     if (journal == null) {
       return JournalScaffold(
-          title: 'Loading', child: Center(child: CircularProgressIndicator()));
+          title: 'Loading',
+          child: Center(child: CircularProgressIndicator()),
+          setTheme: widget.setTheme,
+          prefs: widget.prefs);
     } else {
       return JournalScaffold(
-        title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
-        child: journal.isEmpty ? Welcome() : journalList(context);
-        fab: addEntryFab(context)
-      );
+          title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
+          child: journal.isEmpty ? Welcome() : journalList(context),
+          setTheme: widget.setTheme,
+          prefs: widget.prefs,
+          fab: addEntryFab(context));
     }
   }
 
@@ -57,13 +61,21 @@ class _JournalEntryListScreenState extends State<JournalEntryListScreen> {
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(journal.getEntry(index).title),
-            subtitle: Text(journal.getEntry(index).body),
-            
+            subtitle: Text(journal.getEntry(index).dateTime.toString()),
           );
         });
   }
 
-  FloatingActionButton addEntryFab(BuildContext context) {}
+  FloatingActionButton addEntryFab(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () => displayJournalEntryForm(context),
+      child: Icon(Icons.add_circle_outlined),
+      backgroundColor: Colors.pink,
+    );
+  }
 
-  void displayJournalEntryForm(BuildContext context) {}
+  void displayJournalEntryForm(BuildContext context) {
+    final arguments = Arguments(setTheme: widget.setTheme, prefs: widget.prefs);
+    Navigator.of(context).pushNamed(NewEntry.routeName, arguments: arguments);
+  }
 }
