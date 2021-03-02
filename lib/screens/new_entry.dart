@@ -25,7 +25,7 @@ class _NewEntryState extends State<NewEntry> {
     final Arguments arguments = ModalRoute.of(context).settings.arguments;
     return JournalScaffold(
       title: 'New Journal Entry',
-      child: JournalEntryForm(),
+      child: JournalEntryForm(arguments: arguments),
       setTheme: arguments.setTheme,
       prefs: arguments.prefs,
       lgd: leadingGestureDetector(context),

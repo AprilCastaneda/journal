@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dropdown_rating_form_field.dart';
+import '../components/arguments.dart';
 import '../db/journal_entry_dto.dart';
 import '../db/database_manager.dart';
+import '../screens/journal_entry_list.dart';
 
 class JournalEntryForm extends StatefulWidget {
+  final Arguments arguments;
+  JournalEntryForm({this.arguments});
   @override
   _JournalEntryFormState createState() => _JournalEntryFormState();
 }
@@ -27,19 +31,7 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TextFormField(
-            autofocus: true,
-            decoration: InputDecoration(
-              labelText: 'Title',
-              border: OutlineInputBorder(),
-            ),
-            onSaved: (value) {
-              journalEntryValues.title = value;
-            },
-            validator: (value) {
-              return value.isEmpty ? 'Please enter a title' : null;
-            },
-          ),
+          titleTextField(),
           SizedBox(
             height: 10,
           ),
@@ -126,7 +118,10 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
           addDateToJournalEntryValues();
           final databaseManager = DatabaseManager.getInstance();
           databaseManager.saveJournalEntry(dto: journalEntryValues);
-          Navigator.of(context).pop();
+          Arguments arguments = widget.arguments;
+          Navigator.of(context)
+              .pushNamed(JournalEntryList.routeName, arguments: arguments);
+          ;
         }
       },
     );

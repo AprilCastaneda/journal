@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../db/database_manager.dart';
-// import 'journal_entry.dart';
+import 'journal_entry_screen.dart';
 import 'new_entry.dart';
 import 'welcome.dart';
 import '../widgets/journal_scaffold.dart';
@@ -39,32 +39,99 @@ class _JournalEntryListState extends State<JournalEntryList> {
 
   @override
   Widget build(BuildContext context) {
+    void Function() setTheme = widget.setTheme;
+    SharedPreferences prefs = widget.prefs;
+    if (setTheme == null) {
+      Arguments arguments = ModalRoute.of(context).settings.arguments;
+      setTheme = arguments.setTheme;
+    }
+    if (prefs == null) {
+      Arguments arguments = ModalRoute.of(context).settings.arguments;
+      prefs = arguments.prefs;
+    }
+
     if (journal == null) {
       return JournalScaffold(
           title: 'Loading',
           child: Center(child: CircularProgressIndicator()),
-          setTheme: widget.setTheme,
-          prefs: widget.prefs);
+          setTheme: setTheme,
+          prefs: prefs);
     } else {
       return JournalScaffold(
           title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
-          child: journal.isEmpty ? Welcome() : journalList(context),
-          setTheme: widget.setTheme,
-          prefs: widget.prefs,
+          child: journal.isEmpty
+              ? Welcome()
+              : journalList(context, setTheme, prefs),
+          setTheme: setTheme,
+          prefs: prefs,
           fab: addEntryFab(context));
     }
   }
 
-  Widget journalList(BuildContext context) {
-    return ListView.builder(
-        itemCount: journal.numberOfEntries,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(journal.getEntry(index).title),
-            subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
-                .format(journal.getEntry(index).dateTime)),
-          );
-        });
+  Widget journalList(
+      BuildContext context, Function() setTheme, SharedPreferences prefs) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: ListView.builder(
+              // physics: NeverScrollableScrollPhysics(),
+              // shrinkWrap: true,
+              itemCount: journal.numberOfEntries,
+              itemBuilder: (context, index) {
+                return ListTile(
+                    title: Text(journal.getEntry(index).title),
+                    subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
+                        .format(journal.getEntry(index).dateTime)),
+                    onTap: () {
+                      final arguments = Arguments(
+                          setTheme: setTheme,
+                          prefs: prefs,
+                          title: journal.getEntry(index).title,
+                          body: journal.getEntry(index).body,
+                          date: DateFormat('EEEE, MMMM d, yyyy')
+                              .format(journal.getEntry(index).dateTime),
+                          rating: journal.getEntry(index).rating.toString());
+                      Navigator.of(context).pushNamed(
+                          JournalEntryScreen.routeName,
+                          arguments: arguments);
+                    });
+              }),
+        ),
+      ],
+    );
+    // return SingleChildScrollView(
+    //   physics: ScrollPhysics(),
+    //   child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     mainAxisSize: MainAxisSize.max,
+    //     children: [
+    //       ListView.builder(
+    //           physics: NeverScrollableScrollPhysics(),
+    //           shrinkWrap: true,
+    //           itemCount: journal.numberOfEntries,
+    //           itemBuilder: (context, index) {
+    //             return ListTile(
+    //                 title: Text(journal.getEntry(index).title),
+    //                 subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
+    //                     .format(journal.getEntry(index).dateTime)),
+    //                 onTap: () {
+    //                   final arguments = Arguments(
+    //                       setTheme: widget.setTheme,
+    //                       prefs: widget.prefs,
+    //                       title: journal.getEntry(index).title,
+    //                       body: journal.getEntry(index).body,
+    //                       date: DateFormat('EEEE, MMMM d, yyyy')
+    //                           .format(journal.getEntry(index).dateTime),
+    //                       rating: journal.getEntry(index).rating.toString());
+    //                   Navigator.of(context).pushNamed(
+    //                       JournalEntryScreen.routeName,
+    //                       arguments: arguments);
+    //                 });
+    //           }),
+    //     ],
+    //   ),
+    // );
   }
 
   FloatingActionButton addEntryFab(BuildContext context) {

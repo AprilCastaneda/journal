@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/welcome.dart';
 import 'screens/new_entry.dart';
 import 'screens/journal_entry_list.dart';
+import 'screens/journal_entry_screen.dart';
 
 class App extends StatefulWidget {
   final String schemaSQL;
@@ -54,6 +55,7 @@ class _AppState extends State<App> {
             JournalEntryList(setTheme: setTheme, prefs: widget.prefs),
         Welcome.routeName: (context) => Welcome(),
         NewEntry.routeName: (context) => NewEntry(),
+        JournalEntryScreen.routeName: (context) => JournalEntryScreen(),
       },
     );
     // home: Welcome(setTheme: setTheme, prefs: widget.prefs));
