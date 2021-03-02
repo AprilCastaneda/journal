@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../components/arguments.dart';
 import '../widgets/journal_scaffold.dart';
 
@@ -15,7 +16,9 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
   Widget build(BuildContext context) {
     final Arguments arguments = ModalRoute.of(context).settings.arguments;
     return JournalScaffold(
-      title: arguments.date ?? 'journal date empty',
+      title: DateFormat('EEEE, MMMM d, yyyy')
+          .format(arguments.journalEntry.dateTime)
+          .toString(),
       child: bodyColumn(context, arguments),
       setTheme: arguments.setTheme,
       prefs: arguments.prefs,
@@ -45,7 +48,7 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(arguments.title ?? 'journal title empty',
+              Text(arguments.journalEntry.title,
                   style: Theme.of(context).textTheme.headline5),
             ],
           ),
@@ -57,7 +60,7 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(arguments.body ?? 'journal body empty',
+              Text(arguments.journalEntry.body,
                   style: Theme.of(context).textTheme.subtitle1),
             ],
           ),
@@ -70,7 +73,7 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('Rating: ', style: Theme.of(context).textTheme.bodyText1),
-              Text(arguments.rating ?? 'journal rating empty',
+              Text(arguments.journalEntry.rating.toString(),
                   style: Theme.of(context).textTheme.bodyText1),
             ],
           ),

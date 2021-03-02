@@ -22,27 +22,35 @@ class _JournalDrawerState extends State<JournalDrawer> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * .125,
-            child: DrawerHeader(
-              child: Text('Settings'),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * .01),
-            child: SwitchListTile(
-                title: const Text('Dark Mode'),
-                value: !isDark,
-                onChanged: (bool val) {
-                  setState(() {
-                    widget.prefs.setBool(DARK_THEME_KEY, !val);
-                    widget.setTheme();
-                  });
-                }),
-          ),
+          drawerHeader(context),
+          drawerBody(context),
         ],
       ),
+    );
+  }
+
+  Widget drawerHeader(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * .125,
+      child: DrawerHeader(
+        child: Text('Settings'),
+      ),
+    );
+  }
+
+  Widget drawerBody(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * .01),
+      child: SwitchListTile(
+          title: const Text('Dark Mode'),
+          value: !isDark,
+          onChanged: (bool val) {
+            setState(() {
+              widget.prefs.setBool(DARK_THEME_KEY, !val);
+              widget.setTheme();
+            });
+          }),
     );
   }
 }

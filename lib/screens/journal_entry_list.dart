@@ -105,17 +105,20 @@ class _JournalEntryListState extends State<JournalEntryList> {
                     subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
                         .format(journal.getEntry(index).dateTime)),
                     onTap: () {
-                      final args = Arguments(
+                      final journalEntry = JournalEntry(
+                        id: journal.getEntry(index).id,
+                        title: journal.getEntry(index).title,
+                        body: journal.getEntry(index).body,
+                        rating: journal.getEntry(index).rating,
+                        dateTime: journal.getEntry(index).dateTime,
+                      );
+                      final arguments = Arguments(
                           setTheme: setTheme,
                           prefs: prefs,
-                          title: journal.getEntry(index).title,
-                          body: journal.getEntry(index).body,
-                          date: DateFormat('EEEE, MMMM d, yyyy')
-                              .format(journal.getEntry(index).dateTime),
-                          rating: journal.getEntry(index).rating.toString());
+                          journalEntry: journalEntry);
                       Navigator.of(context).pushNamed(
                           JournalEntryList.routeName,
-                          arguments: args);
+                          arguments: arguments);
                     });
               }),
         ),
@@ -139,14 +142,17 @@ class _JournalEntryListState extends State<JournalEntryList> {
                     subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
                         .format(journal.getEntry(index).dateTime)),
                     onTap: () {
+                      final journalEntry = JournalEntry(
+                        id: journal.getEntry(index).id,
+                        title: journal.getEntry(index).title,
+                        body: journal.getEntry(index).body,
+                        rating: journal.getEntry(index).rating,
+                        dateTime: journal.getEntry(index).dateTime,
+                      );
                       final arguments = Arguments(
                           setTheme: setTheme,
                           prefs: prefs,
-                          title: journal.getEntry(index).title,
-                          body: journal.getEntry(index).body,
-                          date: DateFormat('EEEE, MMMM d, yyyy')
-                              .format(journal.getEntry(index).dateTime),
-                          rating: journal.getEntry(index).rating.toString());
+                          journalEntry: journalEntry);
                       Navigator.of(context).pushNamed(
                           JournalEntryScreen.routeName,
                           arguments: arguments);
@@ -171,7 +177,7 @@ class _JournalEntryListState extends State<JournalEntryList> {
 
   Widget bodyColumn(BuildContext context, Arguments arguments) {
     bool nullArgs = false;
-    if (arguments == null) {
+    if (arguments == null || arguments.journalEntry == null) {
       nullArgs = true;
     }
     return Column(
@@ -187,7 +193,7 @@ class _JournalEntryListState extends State<JournalEntryList> {
               Text(
                   nullArgs
                       ? journal.getEntry(0).title
-                      : (arguments.title ?? 'journal title empty'),
+                      : arguments.journalEntry.title,
                   style: Theme.of(context).textTheme.headline5),
             ],
           ),
@@ -202,7 +208,7 @@ class _JournalEntryListState extends State<JournalEntryList> {
               Text(
                   nullArgs
                       ? journal.getEntry(0).body
-                      : (arguments.title ?? 'journal body empty'),
+                      : arguments.journalEntry.body,
                   style: Theme.of(context).textTheme.subtitle1),
             ],
           ),
@@ -218,7 +224,7 @@ class _JournalEntryListState extends State<JournalEntryList> {
               Text(
                   nullArgs
                       ? journal.getEntry(0).rating.toString()
-                      : (arguments.rating ?? 'journal rating empty'),
+                      : arguments.journalEntry.rating.toString(),
                   style: Theme.of(context).textTheme.bodyText1),
             ],
           ),

@@ -30,20 +30,6 @@ class JournalScaffold extends StatefulWidget {
 class _JournalScaffoldState extends State<JournalScaffold> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   if (journal == null) {
-  //     return JournalScaffold(
-  //         title: 'Loading', child: Center(child: CircularProgressIndicator()));
-  //   } else {
-  //     return JournalScaffold(
-  //       title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
-  //       child: journal.isEmpty ? Welcome() : journalList(context);
-  //       fab: addEntryFab(context)
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,66 +37,27 @@ class _JournalScaffoldState extends State<JournalScaffold> {
         endDrawerEnableOpenDragGesture: false,
         endDrawer:
             JournalDrawer(setTheme: widget.setTheme, prefs: widget.prefs),
-        appBar: AppBar(
-          leading: widget.lgd,
-          title: Text(widget.title),
-          actions: [
-            Builder(
-              builder: (context) => IconButton(
-                icon: Icon(
-                  Icons.settings,
-                ),
-                onPressed: () => scaffoldKey.currentState.openEndDrawer(),
-              ),
-            ),
-          ],
-        ),
+        appBar: scaffoldAppBar(),
         body: Center(
           child: widget.child,
-          //   child: Column(
-          //     children: [
-          //       Expanded(
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.center,
-          //           crossAxisAlignment: CrossAxisAlignment.end,
-          //           children: [
-          //             Icon(
-          //               Icons.book,
-          //               color: Colors.pink,
-          //               size: MediaQuery.of(context).size.height * .1,
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //       Expanded(
-          //         child: Row(
-          //             mainAxisAlignment: MainAxisAlignment.center,
-          //             crossAxisAlignment: CrossAxisAlignment.start,
-          //             children: [
-          //               Text('Journal',
-          //                   style: Theme.of(context).textTheme.headline6)
-          //             ]),
-          //       ),
-          //       Padding(
-          //         padding: const EdgeInsets.all(8.0),
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.end,
-          //           crossAxisAlignment: CrossAxisAlignment.end,
-          //           children: [
-          //             RaisedButton(
-          //               child: Icon(
-          //                 Icons.add_circle_outlined,
-          //                 size: MediaQuery.of(context).size.height * .075,
-          //               ),
-          //               onPressed:
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ),
         floatingActionButton: widget.fab);
+  }
+
+  Widget scaffoldAppBar() {
+    return AppBar(
+      leading: widget.lgd,
+      title: Text(widget.title),
+      actions: [
+        Builder(
+          builder: (context) => IconButton(
+            icon: Icon(
+              Icons.settings,
+            ),
+            onPressed: () => scaffoldKey.currentState.openEndDrawer(),
+          ),
+        ),
+      ],
+    );
   }
 }

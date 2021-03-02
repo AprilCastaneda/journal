@@ -32,17 +32,11 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           titleTextField(),
-          SizedBox(
-            height: 10,
-          ),
+          size10Box(),
           bodyTextField(),
-          SizedBox(
-            height: 10,
-          ),
+          size10Box(),
           ratingDropDown(),
-          SizedBox(
-            height: 10,
-          ),
+          size10Box(),
           buttons(context),
         ],
       ),
@@ -62,6 +56,12 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
       validator: (value) {
         return value.isEmpty ? 'Please enter a title' : null;
       },
+    );
+  }
+
+  Widget size10Box() {
+    return SizedBox(
+      height: 10,
     );
   }
 
@@ -121,7 +121,6 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
           Arguments arguments = widget.arguments;
           Navigator.of(context)
               .pushNamed(JournalEntryList.routeName, arguments: arguments);
-          ;
         }
       },
     );
