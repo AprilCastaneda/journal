@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'app.dart';
 import 'db/database_manager.dart';
 
@@ -23,11 +23,11 @@ void main() async {
   // final File file = File('$documentsPath/example.txt');
   // await file.writeAsString('Important data here!');
 
-  String schemaSQL = await rootBundle.loadString(SCHEMA_SQL_PATH);
+  String createSQL = await rootBundle.loadString(SCHEMA_SQL_PATH);
 
-  await DatabaseManager.initialize();
+  await DatabaseManager.initialize(createSQL);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  runApp(App(schemaSQL: schemaSQL, prefs: prefs));
+  runApp(App(prefs: prefs));
 }

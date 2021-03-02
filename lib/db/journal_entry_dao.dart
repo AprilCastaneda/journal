@@ -7,6 +7,7 @@ class JournalEntryDAO {
     final journalRecords = await databaseManager.journalEntries();
     return journalRecords.map((record) {
       return JournalEntry(
+          id: record['id'],
           title: record['title'],
           body: record['body'],
           rating: record['rating'],

@@ -41,12 +41,11 @@ class _JournalEntryListState extends State<JournalEntryList> {
   Widget build(BuildContext context) {
     void Function() setTheme = widget.setTheme;
     SharedPreferences prefs = widget.prefs;
+    Arguments arguments = ModalRoute.of(context).settings.arguments;
     if (setTheme == null) {
-      Arguments arguments = ModalRoute.of(context).settings.arguments;
       setTheme = arguments.setTheme;
     }
     if (prefs == null) {
-      Arguments arguments = ModalRoute.of(context).settings.arguments;
       prefs = arguments.prefs;
     }
 
@@ -57,21 +56,77 @@ class _JournalEntryListState extends State<JournalEntryList> {
           setTheme: setTheme,
           prefs: prefs);
     } else {
-      return JournalScaffold(
-          title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
-          child: journal.isEmpty
-              ? Welcome()
-              : journalList(context, setTheme, prefs),
-          setTheme: setTheme,
-          prefs: prefs,
-          fab: addEntryFab(context));
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 500) {
+            return JournalScaffold(
+                title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
+                child: journal.isEmpty
+                    ? Welcome()
+                    : journalList(context, setTheme, prefs),
+                setTheme: setTheme,
+                prefs: prefs,
+                fab: addEntryFab(context));
+          } else {
+            return JournalScaffold(
+                title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
+                child: journal.isEmpty
+                    ? Row(children: [Welcome()])
+                    : Row(children: [
+                        Flexible(
+                            flex: 5,
+                            child: journalListSmall(
+                                context, setTheme, prefs, arguments)),
+                        Flexible(flex: 1, child: Text('')),
+                        Flexible(
+                            flex: 5, child: bodyColumn(context, arguments)),
+                      ]),
+                setTheme: setTheme,
+                prefs: prefs,
+                fab: addEntryFab(context));
+          }
+        },
+      );
     }
+  }
+
+  Widget journalListSmall(BuildContext context, Function() setTheme,
+      SharedPreferences prefs, Arguments arguments) {
+    return Column(
+      //mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: ListView.builder(
+              // physics: NeverScrollableScrollPhysics(),
+              // shrinkWrap: true,
+              itemCount: journal.numberOfEntries,
+              itemBuilder: (context, index) {
+                return ListTile(
+                    title: Text(journal.getEntry(index).title),
+                    subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
+                        .format(journal.getEntry(index).dateTime)),
+                    onTap: () {
+                      final args = Arguments(
+                          setTheme: setTheme,
+                          prefs: prefs,
+                          title: journal.getEntry(index).title,
+                          body: journal.getEntry(index).body,
+                          date: DateFormat('EEEE, MMMM d, yyyy')
+                              .format(journal.getEntry(index).dateTime),
+                          rating: journal.getEntry(index).rating.toString());
+                      arguments = args;
+                      setState(() {});
+                    });
+              }),
+        ),
+      ],
+    );
   }
 
   Widget journalList(
       BuildContext context, Function() setTheme, SharedPreferences prefs) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+      //mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
           child: ListView.builder(
@@ -100,38 +155,6 @@ class _JournalEntryListState extends State<JournalEntryList> {
         ),
       ],
     );
-    // return SingleChildScrollView(
-    //   physics: ScrollPhysics(),
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     mainAxisSize: MainAxisSize.max,
-    //     children: [
-    //       ListView.builder(
-    //           physics: NeverScrollableScrollPhysics(),
-    //           shrinkWrap: true,
-    //           itemCount: journal.numberOfEntries,
-    //           itemBuilder: (context, index) {
-    //             return ListTile(
-    //                 title: Text(journal.getEntry(index).title),
-    //                 subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
-    //                     .format(journal.getEntry(index).dateTime)),
-    //                 onTap: () {
-    //                   final arguments = Arguments(
-    //                       setTheme: widget.setTheme,
-    //                       prefs: widget.prefs,
-    //                       title: journal.getEntry(index).title,
-    //                       body: journal.getEntry(index).body,
-    //                       date: DateFormat('EEEE, MMMM d, yyyy')
-    //                           .format(journal.getEntry(index).dateTime),
-    //                       rating: journal.getEntry(index).rating.toString());
-    //                   Navigator.of(context).pushNamed(
-    //                       JournalEntryScreen.routeName,
-    //                       arguments: arguments);
-    //                 });
-    //           }),
-    //     ],
-    //   ),
-    // );
   }
 
   FloatingActionButton addEntryFab(BuildContext context) {
@@ -144,5 +167,63 @@ class _JournalEntryListState extends State<JournalEntryList> {
   void displayJournalEntryForm(BuildContext context) {
     final arguments = Arguments(setTheme: widget.setTheme, prefs: widget.prefs);
     Navigator.of(context).pushNamed(NewEntry.routeName, arguments: arguments);
+  }
+
+  Widget bodyColumn(BuildContext context, Arguments arguments) {
+    bool nullArgs = false;
+    if (arguments == null) {
+      nullArgs = true;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * .01,
+              horizontal: MediaQuery.of(context).size.width * .05),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                  nullArgs
+                      ? journal.getEntry(0).title
+                      : (arguments.title ?? 'journal title empty'),
+                  style: Theme.of(context).textTheme.headline5),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * .01,
+              horizontal: MediaQuery.of(context).size.width * .05),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                  nullArgs
+                      ? journal.getEntry(0).body
+                      : (arguments.title ?? 'journal body empty'),
+                  style: Theme.of(context).textTheme.subtitle1),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * .01,
+              horizontal: MediaQuery.of(context).size.width * .05),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Rating: ', style: Theme.of(context).textTheme.bodyText1),
+              Text(
+                  nullArgs
+                      ? journal.getEntry(0).rating.toString()
+                      : (arguments.rating ?? 'journal rating empty'),
+                  style: Theme.of(context).textTheme.bodyText1),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

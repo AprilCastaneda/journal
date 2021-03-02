@@ -7,10 +7,9 @@ import 'screens/journal_entry_list.dart';
 import 'screens/journal_entry_screen.dart';
 
 class App extends StatefulWidget {
-  final String schemaSQL;
   final SharedPreferences prefs;
 
-  const App({Key key, this.schemaSQL, this.prefs}) : super(key: key);
+  const App({Key key, this.prefs}) : super(key: key);
 
   @override
   _AppState createState() => _AppState();
