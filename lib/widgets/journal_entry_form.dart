@@ -16,35 +16,46 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10),
-      child: Form(
-        key: formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextFormField(
-              autofocus: true,
-              decoration: InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
-              ),
-              onSaved: (value) {
-                journalEntryValues.title = value;
-              },
-              validator: (value) {
-                return value.isEmpty ? 'Please enter a title' : null;
-              },
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            saveButton(context),
-          ],
-        ),
-      ),
+      child: formContent(context),
     );
   }
 
-  Widget formContent(BuildContext context) {}
+  Widget formContent(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          TextFormField(
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: 'Title',
+              border: OutlineInputBorder(),
+            ),
+            onSaved: (value) {
+              journalEntryValues.title = value;
+            },
+            validator: (value) {
+              return value.isEmpty ? 'Please enter a title' : null;
+            },
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          bodyTextField(),
+          SizedBox(
+            height: 10,
+          ),
+          ratingDropDown(),
+          SizedBox(
+            height: 10,
+          ),
+          buttons(context),
+        ],
+      ),
+    );
+  }
 
   Widget titleTextField() {
     return TextFormField(
@@ -62,13 +73,49 @@ class _JournalEntryFormState extends State<JournalEntryForm> {
     );
   }
 
-  Widget bodyTextField() {}
+  Widget bodyTextField() {
+    return TextFormField(
+      autofocus: true,
+      decoration: InputDecoration(
+        labelText: 'Body',
+        border: OutlineInputBorder(),
+      ),
+      onSaved: (value) {
+        journalEntryValues.body = value;
+      },
+      validator: (value) {
+        return value.isEmpty ? 'Please enter some text' : null;
+      },
+    );
+  }
 
-  Widget ratingDropDown() {}
+  Widget ratingDropDown() {
+    return DropdownRatingFormField(
+        maxRating: 4,
+        validator: (value) {
+          return (value < 1 || value > 5)
+              ? 'Please choose a value between 1-4'
+              : null;
+        },
+        onSaved: (value) {
+          journalEntryValues.rating = value;
+        });
+  }
 
-  Widget buttons(BuildContext context) {}
+  Widget buttons(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        cancelButton(context),
+        saveButton(context),
+      ],
+    );
+  }
 
-  Widget cancelButton(BuildContext context) {}
+  Widget cancelButton(BuildContext context) {
+    return RaisedButton(
+        child: Text('Cancel'), onPressed: () => Navigator.of(context).pop());
+  }
 
   Widget saveButton(BuildContext context) {
     return RaisedButton(
