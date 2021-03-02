@@ -11,9 +11,16 @@ class JournalScaffold extends StatefulWidget {
   final void Function() setTheme;
   final SharedPreferences prefs;
   final Widget fab;
+  final Widget lgd;
 
   JournalScaffold(
-      {Key key, this.title, this.child, this.setTheme, this.prefs, this.fab})
+      {Key key,
+      this.title,
+      this.child,
+      this.setTheme,
+      this.prefs,
+      this.fab,
+      this.lgd})
       : super(key: key);
 
   @override
@@ -45,6 +52,7 @@ class _JournalScaffoldState extends State<JournalScaffold> {
         endDrawer:
             JournalDrawer(setTheme: widget.setTheme, prefs: widget.prefs),
         appBar: AppBar(
+          leading: widget.lgd,
           title: Text(widget.title),
           actions: [
             Builder(

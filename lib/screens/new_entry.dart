@@ -28,6 +28,18 @@ class _NewEntryState extends State<NewEntry> {
       child: JournalEntryForm(),
       setTheme: arguments.setTheme,
       prefs: arguments.prefs,
+      lgd: leadingGestureDetector(context),
+    );
+  }
+
+  Widget leadingGestureDetector(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      child: Icon(
+        Icons.chevron_left,
+      ),
     );
   }
 }

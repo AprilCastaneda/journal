@@ -61,7 +61,8 @@ class _JournalEntryListState extends State<JournalEntryList> {
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(journal.getEntry(index).title),
-            subtitle: Text(journal.getEntry(index).dateTime.toString()),
+            subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
+                .format(journal.getEntry(index).dateTime)),
           );
         });
   }
@@ -69,8 +70,7 @@ class _JournalEntryListState extends State<JournalEntryList> {
   FloatingActionButton addEntryFab(BuildContext context) {
     return FloatingActionButton(
       onPressed: () => displayJournalEntryForm(context),
-      child: Icon(Icons.add_circle_outlined),
-      backgroundColor: Colors.pink,
+      child: Icon(Icons.add),
     );
   }
 
