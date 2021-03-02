@@ -75,8 +75,7 @@ class _JournalEntryListState extends State<JournalEntryList> {
                     : Row(children: [
                         Flexible(
                             flex: 5,
-                            child: journalListSmall(
-                                context, setTheme, prefs, arguments)),
+                            child: journalListSmall(context, setTheme, prefs)),
                         Flexible(flex: 1, child: Text('')),
                         Flexible(
                             flex: 5, child: bodyColumn(context, arguments)),
@@ -90,8 +89,8 @@ class _JournalEntryListState extends State<JournalEntryList> {
     }
   }
 
-  Widget journalListSmall(BuildContext context, Function() setTheme,
-      SharedPreferences prefs, Arguments arguments) {
+  Widget journalListSmall(
+      BuildContext context, Function() setTheme, SharedPreferences prefs) {
     return Column(
       //mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -114,8 +113,9 @@ class _JournalEntryListState extends State<JournalEntryList> {
                           date: DateFormat('EEEE, MMMM d, yyyy')
                               .format(journal.getEntry(index).dateTime),
                           rating: journal.getEntry(index).rating.toString());
-                      arguments = args;
-                      setState(() {});
+                      Navigator.of(context).pushNamed(
+                          JournalEntryList.routeName,
+                          arguments: args);
                     });
               }),
         ),
