@@ -26,7 +26,7 @@ class _WelcomeState extends State<Welcome> {
               Icon(
                 Icons.book,
                 color: Colors.pink,
-                size: MediaQuery.of(context).size.height * .1,
+                size: MediaQuery.of(context).size.height * .2,
               ),
             ],
           ),

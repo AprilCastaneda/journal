@@ -11,13 +11,17 @@ class JournalEntryColumn extends StatefulWidget {
 class _JournalEntryColumnState extends State<JournalEntryColumn> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        journalEntryTitle(context),
-        journalEntryBody(context),
-        journalEntryRating(context),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * .03),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          journalEntryTitle(context),
+          journalEntryBody(context),
+          journalEntryRating(context),
+        ],
+      ),
     );
   }
 

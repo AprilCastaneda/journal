@@ -77,8 +77,12 @@ class _JournalEntryListState extends State<JournalEntryList> {
 
   Widget verticalView(
       Function() setTheme, SharedPreferences prefs, bool vertical) {
+    var route = ModalRoute.of(context).settings.name;
     return JournalScaffold(
-        lgd: JournalBackButton(),
+        lgd: (route == NewEntry.routeName ||
+                route == JournalEntryScreen.routeName)
+            ? JournalBackButton()
+            : null,
         title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
         child: journal.isEmpty
             ? Welcome()
@@ -90,8 +94,12 @@ class _JournalEntryListState extends State<JournalEntryList> {
 
   Widget horizontalView(Function() setTheme, SharedPreferences prefs,
       Arguments arguments, bool vertical) {
+    var route = ModalRoute.of(context).settings.name;
     return JournalScaffold(
-        lgd: JournalBackButton(),
+        lgd: (route == NewEntry.routeName ||
+                route == JournalEntryScreen.routeName)
+            ? JournalBackButton()
+            : null,
         title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
         child: journal.isEmpty
             ? Welcome()
