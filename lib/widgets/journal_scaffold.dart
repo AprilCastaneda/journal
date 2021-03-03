@@ -3,9 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/journal_drawer.dart';
 
 class JournalScaffold extends StatefulWidget {
-  // static const routeName = 'welcome';
-  // JournalScaffold({Key key, this.setTheme, this.prefs}) : super(key: key);
-
   final String title;
   final Widget child;
   final void Function() setTheme;

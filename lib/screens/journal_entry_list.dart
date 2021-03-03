@@ -5,6 +5,8 @@ import '../db/database_manager.dart';
 import 'journal_entry_screen.dart';
 import 'new_entry.dart';
 import 'welcome.dart';
+import '../widgets/journal_back_button.dart';
+import '../widgets/journal_entry_column.dart';
 import '../widgets/journal_scaffold.dart';
 import '../models/journal.dart';
 import '../models/journal_entry.dart';
@@ -39,6 +41,7 @@ class _JournalEntryListState extends State<JournalEntryList> {
 
   @override
   Widget build(BuildContext context) {
+    bool vertical = true;
     void Function() setTheme = widget.setTheme;
     SharedPreferences prefs = widget.prefs;
     Arguments arguments = ModalRoute.of(context).settings.arguments;
@@ -50,113 +53,100 @@ class _JournalEntryListState extends State<JournalEntryList> {
     }
 
     if (journal == null) {
-      return JournalScaffold(
-          title: 'Loading',
-          child: Center(child: CircularProgressIndicator()),
-          setTheme: setTheme,
-          prefs: prefs);
+      return loadingScreen(setTheme, prefs);
     } else {
       return LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth < 500) {
-            return JournalScaffold(
-                title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
-                child: journal.isEmpty
-                    ? Welcome()
-                    : journalList(context, setTheme, prefs),
-                setTheme: setTheme,
-                prefs: prefs,
-                fab: addEntryFab(context));
+            return verticalView(setTheme, prefs, vertical);
           } else {
-            return JournalScaffold(
-                title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
-                child: journal.isEmpty
-                    ? Welcome()
-                    : Row(children: [
-                        Flexible(
-                            flex: 5,
-                            child: journalListSmall(context, setTheme, prefs)),
-                        Flexible(flex: 1, child: Text('')),
-                        Flexible(
-                            flex: 5, child: bodyColumn(context, arguments)),
-                      ]),
-                setTheme: setTheme,
-                prefs: prefs,
-                fab: addEntryFab(context));
+            return horizontalView(setTheme, prefs, arguments, !vertical);
           }
         },
       );
     }
   }
 
-  Widget journalListSmall(
-      BuildContext context, Function() setTheme, SharedPreferences prefs) {
-    return Column(
-      //mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Expanded(
-          child: ListView.builder(
-              // physics: NeverScrollableScrollPhysics(),
-              // shrinkWrap: true,
-              itemCount: journal.numberOfEntries,
-              itemBuilder: (context, index) {
-                return ListTile(
-                    title: Text(journal.getEntry(index).title),
-                    subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
-                        .format(journal.getEntry(index).dateTime)),
-                    onTap: () {
-                      final journalEntry = JournalEntry(
-                        id: journal.getEntry(index).id,
-                        title: journal.getEntry(index).title,
-                        body: journal.getEntry(index).body,
-                        rating: journal.getEntry(index).rating,
-                        dateTime: journal.getEntry(index).dateTime,
-                      );
-                      final arguments = Arguments(
-                          setTheme: setTheme,
-                          prefs: prefs,
-                          journalEntry: journalEntry);
-                      Navigator.of(context).pushNamed(
-                          JournalEntryList.routeName,
-                          arguments: arguments);
-                    });
-              }),
-        ),
-      ],
-    );
+  Widget loadingScreen(Function() setTheme, SharedPreferences prefs) {
+    return JournalScaffold(
+        title: 'Loading',
+        child: Center(child: CircularProgressIndicator()),
+        setTheme: setTheme,
+        prefs: prefs);
   }
 
-  Widget journalList(
-      BuildContext context, Function() setTheme, SharedPreferences prefs) {
+  Widget verticalView(
+      Function() setTheme, SharedPreferences prefs, bool vertical) {
+    return JournalScaffold(
+        lgd: JournalBackButton(),
+        title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
+        child: journal.isEmpty
+            ? Welcome()
+            : journalList(context, setTheme, prefs, vertical),
+        setTheme: setTheme,
+        prefs: prefs,
+        fab: addEntryFab(context));
+  }
+
+  Widget horizontalView(Function() setTheme, SharedPreferences prefs,
+      Arguments arguments, bool vertical) {
+    return JournalScaffold(
+        lgd: JournalBackButton(),
+        title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
+        child: journal.isEmpty
+            ? Welcome()
+            : Row(children: [
+                Flexible(
+                    flex: 5,
+                    child: journalList(context, setTheme, prefs, vertical)),
+                Flexible(flex: 1, child: Text('')),
+                Flexible(
+                    flex: 5,
+                    child: JournalEntryColumn(
+                        journalEntry:
+                            arguments?.journalEntry ?? journal.getEntry(0))),
+              ]),
+        setTheme: setTheme,
+        prefs: prefs,
+        fab: addEntryFab(context));
+  }
+
+  void pushJournalScreen(
+      int index, Function() setTheme, SharedPreferences prefs, bool vertical) {
+    final journalEntry = JournalEntry(
+      id: journal.getEntry(index).id,
+      title: journal.getEntry(index).title,
+      body: journal.getEntry(index).body,
+      rating: journal.getEntry(index).rating,
+      dateTime: journal.getEntry(index).dateTime,
+    );
+    final arguments =
+        Arguments(setTheme: setTheme, prefs: prefs, journalEntry: journalEntry);
+    vertical
+        ? Navigator.of(context)
+            .pushNamed(JournalEntryScreen.routeName, arguments: arguments)
+        : Navigator.of(context)
+            .pushNamed(JournalEntryList.routeName, arguments: arguments);
+  }
+
+  Widget journalTile(
+      int index, Function() setTheme, SharedPreferences prefs, bool vertical) {
+    return ListTile(
+        title: Text(journal.getEntry(index).title),
+        subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
+            .format(journal.getEntry(index).dateTime)),
+        onTap: () => pushJournalScreen(index, setTheme, prefs, vertical));
+  }
+
+  Widget journalList(BuildContext context, Function() setTheme,
+      SharedPreferences prefs, bool vertical) {
     return Column(
-      //mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
           child: ListView.builder(
-              // physics: NeverScrollableScrollPhysics(),
-              // shrinkWrap: true,
               itemCount: journal.numberOfEntries,
               itemBuilder: (context, index) {
-                return ListTile(
-                    title: Text(journal.getEntry(index).title),
-                    subtitle: Text(DateFormat('EEEE, MMMM d, yyyy')
-                        .format(journal.getEntry(index).dateTime)),
-                    onTap: () {
-                      final journalEntry = JournalEntry(
-                        id: journal.getEntry(index).id,
-                        title: journal.getEntry(index).title,
-                        body: journal.getEntry(index).body,
-                        rating: journal.getEntry(index).rating,
-                        dateTime: journal.getEntry(index).dateTime,
-                      );
-                      final arguments = Arguments(
-                          setTheme: setTheme,
-                          prefs: prefs,
-                          journalEntry: journalEntry);
-                      Navigator.of(context).pushNamed(
-                          JournalEntryScreen.routeName,
-                          arguments: arguments);
-                    });
+                return journalTile(index, setTheme, prefs, vertical);
               }),
         ),
       ],
@@ -173,63 +163,5 @@ class _JournalEntryListState extends State<JournalEntryList> {
   void displayJournalEntryForm(BuildContext context) {
     final arguments = Arguments(setTheme: widget.setTheme, prefs: widget.prefs);
     Navigator.of(context).pushNamed(NewEntry.routeName, arguments: arguments);
-  }
-
-  Widget bodyColumn(BuildContext context, Arguments arguments) {
-    bool nullArgs = false;
-    if (arguments == null || arguments.journalEntry == null) {
-      nullArgs = true;
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * .01,
-              horizontal: MediaQuery.of(context).size.width * .05),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                  nullArgs
-                      ? journal.getEntry(0).title
-                      : arguments.journalEntry.title,
-                  style: Theme.of(context).textTheme.headline5),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * .01,
-              horizontal: MediaQuery.of(context).size.width * .05),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                  nullArgs
-                      ? journal.getEntry(0).body
-                      : arguments.journalEntry.body,
-                  style: Theme.of(context).textTheme.subtitle1),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * .01,
-              horizontal: MediaQuery.of(context).size.width * .05),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('Rating: ', style: Theme.of(context).textTheme.bodyText1),
-              Text(
-                  nullArgs
-                      ? journal.getEntry(0).rating.toString()
-                      : arguments.journalEntry.rating.toString(),
-                  style: Theme.of(context).textTheme.bodyText1),
-            ],
-          ),
-        ),
-      ],
-    );
   }
 }
