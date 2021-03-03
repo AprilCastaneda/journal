@@ -71,7 +71,7 @@ class _JournalEntryListState extends State<JournalEntryList> {
             return JournalScaffold(
                 title: journal.isEmpty ? 'Welcome' : 'Journal Entries',
                 child: journal.isEmpty
-                    ? Row(children: [Welcome()])
+                    ? Welcome()
                     : Row(children: [
                         Flexible(
                             flex: 5,
