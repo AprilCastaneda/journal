@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../screens/new_entry.dart';
-import '../widgets/journal_drawer.dart';
 
 class Welcome extends StatefulWidget {
   static const routeName = 'welcome';

@@ -51,9 +51,3 @@ class DatabaseManager {
     return journalEntries;
   }
 }
-
-// DatabaseManager.initialize();
-
-// DatabaseManager.getInstance();
-
-// DatabaseManager manager = DatabaseManager.getInstance();

@@ -57,7 +57,5 @@ class _AppState extends State<App> {
         JournalEntryScreen.routeName: (context) => JournalEntryScreen(),
       },
     );
-    // home: Welcome(setTheme: setTheme, prefs: widget.prefs));
-    // title: 'Journal', theme: ThemeData.dark(), routes: routes);
   }
 }
